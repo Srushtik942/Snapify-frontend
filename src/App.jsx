@@ -9,7 +9,7 @@ function App() {
     <>
     <BrowserRouter>
       <Routes>
-        <Route path="/"element={<Login/>}/>
+        <Route path="/" element={<Login/>}/>
          <Route path="/success" element={<SuccessComponent />} />
         <Route path="/albums" element={<Albums />} />
       </Routes>
