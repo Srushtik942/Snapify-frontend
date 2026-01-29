@@ -18,9 +18,9 @@ const Albums = () => {
         })
         .then((res) => {
           console.log("FULL RESPONSE:", res.data);
-          const albumsArray = Array.isArray(res.data.album)
-            ? res.data.album
-            : Object.values(res.data.album || {});
+          const albumsArray = Array.isArray(res.data.albums)
+            ? res.data.albums
+            : Object.values(res.data.albums || []);
           setAlbum(albumsArray);
         })
         .catch((err) => console.error(err));
