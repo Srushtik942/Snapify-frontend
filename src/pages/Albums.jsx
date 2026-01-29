@@ -17,7 +17,11 @@ const Albums = () => {
           Authorization: `Bearer ${token}`
         },
       })
-      .then((res)=> setAlbum(res.data.album))
+      .then((res)=> {
+        // convert to array if needed
+        const albumsArray = Array.isArray(res.data.album) ? res.data.album : Object.values(res.data.album);
+        setAlbum(albumsArray);
+      })
       .catch((err)=> console.error(err));
     }
   },[token]);
