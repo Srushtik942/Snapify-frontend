@@ -1,5 +1,6 @@
 import React from "react";
 import { FcGoogle } from "react-icons/fc";
+import Navbar from "./Navbar";
 
 const Login = () => {
 
@@ -19,6 +20,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen w-full flex justify-center items-center font-poppins relative overflow-hidden">
+      <Navbar/>
 
       <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500"></div>
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Navbar from "../components/Navbar";
 
 const Albums = () => {
   const [album, setAlbum] = useState([]);
@@ -54,8 +55,6 @@ const Albums = () => {
       setName("");
 
       setDescription("");
-
-
     }catch(err){
       console.log(err);
     }
@@ -63,7 +62,7 @@ const Albums = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden flex items-center justify-center bg-gradient-to-br from-pink-500 via-purple-600 to-indigo-700  px-4">
-
+    <Navbar/>
 
       {/* Main Card */}
       <div className="relative z-10 w-full max-w-3xl bg-white/10 backdrop-blur-xl rounded-2xl shadow-2xl p-6 md:p-10 border border-white/20">
