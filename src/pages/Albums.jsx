@@ -39,7 +39,8 @@ const Albums = () => {
        onChange={(e)=>setDescription(e.target.value)}
       />
 
-      <button onClick={createAlbum}>Create</button>
+      <button >Create</button>
+      {/* onClick={createAlbum}ch */}
 
       <h2>Albums</h2>
       <ul>
