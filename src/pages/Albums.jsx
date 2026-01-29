@@ -5,6 +5,7 @@ const Albums = () => {
   const [album, setAlbum] = useState([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [error, setError] = useState("");
 
   const token = localStorage.getItem("token");
 
@@ -26,6 +27,39 @@ const Albums = () => {
         .catch((err) => console.error(err));
     }
   }, [token]);
+
+
+  const handleCreateAlbum = async() =>{
+    try{
+
+      setError("");
+
+      if(!name || !description){
+        setError("Please Enter the album name and description");
+        return;
+      }
+
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/albums`,
+        {name, description},
+        {
+          headers:{
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setAlbum((prev)=> [res.data.newAlbum, ...prev]);
+
+      setName("");
+
+      setDescription("");
+
+
+    }catch(err){
+      console.log(err);
+    }
+  }
 
   return (
     <div className="min-h-screen relative overflow-hidden flex items-center justify-center bg-gradient-to-br from-pink-500 via-purple-600 to-indigo-700  px-4">
@@ -61,8 +95,13 @@ const Albums = () => {
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
+          {error && (
+            <p className="text-red-300 text-sm mt-2 font-medium">{error}</p>
+          )}
 
-          <button className="mt-4 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition">
+          <button
+          onClick={handleCreateAlbum}
+          className="mt-4 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition">
             Create
           </button>
         </div>
