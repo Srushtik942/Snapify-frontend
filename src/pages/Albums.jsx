@@ -63,7 +63,6 @@
 // }
 
 // export default Albums
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -74,7 +73,6 @@ const Albums = () => {
 
   const token = localStorage.getItem("token");
 
-  // fetch album
   useEffect(() => {
     if (token) {
       axios
@@ -87,7 +85,6 @@ const Albums = () => {
           const albumsArray = Array.isArray(res.data.album)
             ? res.data.album
             : Object.values(res.data.album || {});
-          console.log(albumsArray);
           setAlbum(albumsArray);
         })
         .catch((err) => console.error(err));
@@ -95,64 +92,69 @@ const Albums = () => {
   }, [token]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-slate-950 relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 px-4">
 
-      {/* Option 3 Professional Pattern Background */}
-      <div
-        className="absolute inset-0 opacity-30"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)",
-          backgroundSize: "28px 28px",
-        }}
-      />
+      {/* Glow circles */}
+      <div className="absolute -top-24 -left-24 w-[400px] h-[400px] bg-indigo-600 rounded-full blur-[120px] opacity-50"></div>
+      <div className="absolute -bottom-28 -right-28 w-[400px] h-[400px] bg-pink-500 rounded-full blur-[120px] opacity-50"></div>
 
-      {/* Main Content Card */}
+      {/* Main Card */}
       <div className="relative z-10 w-full max-w-3xl bg-white/10 backdrop-blur-xl rounded-2xl shadow-2xl p-6 md:p-10 border border-white/20">
 
-        <h1 className="text-3xl font-bold text-white text-center">
-          Welcome to Snapify!
+        <h1 className="text-3xl md:text-4xl font-bold text-white text-center">
+          Welcome to <span className="text-indigo-300">Snapify</span> 📸
         </h1>
 
-        <h2 className="text-xl font-semibold text-white mt-8 mb-3">
-          Create Album
-        </h2>
+        <p className="text-center text-white/70 mt-2">
+          Create and manage your albums easily
+        </p>
 
-        <div className="flex flex-col gap-3">
-          <input
-            className="px-4 py-3 rounded-xl outline-none bg-white/20 text-white placeholder-white/60 border border-white/20 focus:border-indigo-400"
-            placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
+        {/* Create Album */}
+        <div className="mt-8">
+          <h2 className="text-xl font-semibold text-white mb-4">Create Album</h2>
 
-          <input
-            className="px-4 py-3 rounded-xl outline-none bg-white/20 text-white placeholder-white/60 border border-white/20 focus:border-indigo-400"
-            placeholder="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
+          <div className="grid md:grid-cols-2 gap-4">
+            <input
+              className="px-4 py-3 rounded-xl outline-none bg-white/20 text-white placeholder-white/60 border border-white/20 focus:border-indigo-400"
+              placeholder="Album Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
 
-          <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition">
+            <input
+              className="px-4 py-3 rounded-xl outline-none bg-white/20 text-white placeholder-white/60 border border-white/20 focus:border-indigo-400"
+              placeholder="Album Description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+
+          <button className="mt-4 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition">
             Create
           </button>
         </div>
 
-        <h2 className="text-xl font-semibold text-white mt-10 mb-4">
-          Albums
-        </h2>
+        {/* Albums List */}
+        <div className="mt-10">
+          <h2 className="text-xl font-semibold text-white mb-4">Albums</h2>
 
-        <ul className="space-y-3">
-          {album.map((album) => (
-            <li
-              key={album._id}
-              className="bg-white/10 border border-white/20 rounded-xl p-4 text-white hover:bg-white/20 transition"
-            >
-              <strong className="text-lg">{album.name}</strong> -{" "}
-              <span className="text-white/70">{album.description}</span>
-            </li>
-          ))}
-        </ul>
+          {album.length === 0 ? (
+            <p className="text-white/60 text-center">No albums found</p>
+          ) : (
+            <div className="grid sm:grid-cols-2 gap-4">
+              {album.map((alb) => (
+                <div
+                  key={alb._id}
+                  className="bg-white/10 border border-white/20 rounded-2xl p-4 hover:bg-white/20 transition"
+                >
+                  <h3 className="text-lg font-bold text-white">{alb.name}</h3>
+                  <p className="text-white/70 text-sm mt-1">{alb.description}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
       </div>
     </div>
   );
