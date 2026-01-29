@@ -92,11 +92,8 @@ const Albums = () => {
   }, [token]);
 
   return (
-    <div className="min-h-screen relative overflow-hidden flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 px-4">
+    <div className="min-h-screen relative overflow-hidden flex items-center justify-centerbg-gradient-to-br from-pink-500 via-purple-600 to-indigo-700  px-4">
 
-      {/* Glow circles */}
-      <div className="absolute -top-24 -left-24 w-[400px] h-[400px] bg-indigo-600 rounded-full blur-[120px] opacity-50"></div>
-      <div className="absolute -bottom-28 -right-28 w-[400px] h-[400px] bg-pink-500 rounded-full blur-[120px] opacity-50"></div>
 
       {/* Main Card */}
       <div className="relative z-10 w-full max-w-3xl bg-white/10 backdrop-blur-xl rounded-2xl shadow-2xl p-6 md:p-10 border border-white/20">
