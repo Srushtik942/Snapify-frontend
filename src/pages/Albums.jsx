@@ -20,6 +20,7 @@ const Albums = () => {
       .then((res)=> {
         // convert to array if needed
         const albumsArray = Array.isArray(res.data.album) ? res.data.album : Object.values(res.data.album);
+        console.log(albumsArray)
         setAlbum(albumsArray);
       })
       .catch((err)=> console.error(err));
@@ -35,7 +36,7 @@ const Albums = () => {
       <input
       placeholder='Name'
       value={name}
-      onChange={(e)=> ssrExportNameKey(e.target.value)}
+      onChange={(e)=>setName(e.target.value)}
       />
       <input
        placeholder="Description"
@@ -48,7 +49,7 @@ const Albums = () => {
 
       <h2>Albums</h2>
       <ul>
-        {Albums.map((album)=>(
+        {album.map((album)=>(
           <li>
             <strong>{album.name}</strong> - {album.description}
           </li>
