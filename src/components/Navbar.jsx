@@ -1,37 +1,36 @@
-import React from 'react'
-import { useState } from 'react'
+import { useState } from "react";
 
-const Navbar = ({onSearch}) => {
+export default function Navbar({ onSearch = () => {} }) {
+  const [query, setQuery] = useState("");
 
-    const [query, setQuery] = useState("");
-    const handleSearch = (e)=>{
-        e.preventDefault();
-
-        if(query.trim() !== ""){
-            onSearch(query);
-        }
-
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (query.trim() !== "") {
+      onSearch(query);
     }
+  };
 
   return (
-    <div>
- <nav style={{ padding: "1rem", backgroundColor: "#222", color: "white", display: "flex", justifyContent: "space-between" }}>
-      <h1 style={{ margin: 0 }}>My Albums App</h1>
-      <form onSubmit={handleSearch} style={{ display: "flex", gap: "0.5rem" }}>
-        <input
-          type="text"
-          placeholder="Search albums..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          style={{ padding: "0.3rem", borderRadius: "4px", border: "none" }}
-        />
-        <button type="submit" style={{ padding: "0.3rem 0.6rem", borderRadius: "4px", border: "none", cursor: "pointer" }}>
-          Search
-        </button>
-      </form>
-    </nav>
-    </div>
-  )
-}
+    <nav className="fixed top-0 left-0 w-full z-50 bg-white/20 backdrop-blur-xl border-b border-white/10">
+      <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
+        <h1 className="text-indigo-300 font-bold text-4xl">Snapify</h1>
 
-export default Navbar
+        <form onSubmit={handleSearch} className="flex gap-2">
+          <input
+            type="text"
+            placeholder="Search albums..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="px-4 py-2 rounded-xl bg-white/10 text-white placeholder-white/60 outline-none border border-white/10 focus:border-indigo-400"
+          />
+          <button
+            type="submit"
+            className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition"
+          >
+            Search
+          </button>
+        </form>
+      </div>
+    </nav>
+  );
+}

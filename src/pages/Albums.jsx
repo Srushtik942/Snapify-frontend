@@ -61,7 +61,7 @@ const Albums = () => {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden flex items-center justify-center bg-gradient-to-br from-pink-500 via-purple-600 to-indigo-700  px-4">
+    <div className="min-h-screen relative overflow-hidden flex items-center justify-center bg-gradient-to-br from-pink-500 via-purple-600 to-indigo-700  pt-15">
     <Navbar/>
 
       {/* Main Card */}
