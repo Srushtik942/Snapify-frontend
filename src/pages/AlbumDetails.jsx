@@ -30,7 +30,7 @@ const AlbumDetails = () => {
       <Navbar/>
       <div className="w-full max-w-5xl bg-white/20 backdrop-blur-lg rounded-2xl shadow-2xl p-6 md:p-10">
         <h1 className="text-3xl md:text-4xl font-bold text-white text-center mb-8">
-          Album Details
+          Albums
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
