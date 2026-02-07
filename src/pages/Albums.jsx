@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
+import { useNavigate } from "react-router-dom";
 
 const Albums = () => {
   const [album, setAlbum] = useState([]);
@@ -8,18 +9,16 @@ const Albums = () => {
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
 
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
   useEffect(() => {
     if (token) {
       axios
         .get(`${import.meta.env.VITE_BACKEND_URL}/albums`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         })
         .then((res) => {
-          console.log("FULL RESPONSE:", res.data);
           const albumsArray = Array.isArray(res.data.albums)
             ? res.data.albums
             : Object.values(res.data.albums || []);
@@ -29,44 +28,34 @@ const Albums = () => {
     }
   }, [token]);
 
-
-  const handleCreateAlbum = async() =>{
-    try{
-
+  const handleCreateAlbum = async () => {
+    try {
       setError("");
 
-      if(!name || !description){
+      if (!name || !description) {
         setError("Please Enter the album name and description");
         return;
       }
 
       const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/albums`,
-        {name, description},
-        {
-          headers:{
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { name, description },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      setAlbum((prev)=> [res.data.newAlbum, ...prev]);
-
+      setAlbum((prev) => [res.data.newAlbum, ...prev]);
       setName("");
-
       setDescription("");
-    }catch(err){
+    } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen relative overflow-hidden flex items-center justify-center bg-gradient-to-br from-pink-500 via-purple-600 to-indigo-700  pt-15">
-    <Navbar/>
+    <div className="min-h-screen relative overflow-hidden flex items-center justify-center bg-gradient-to-br from-pink-500 via-purple-600 to-indigo-700 pt-15">
+      <Navbar />
 
-      {/* Main Card */}
       <div className="relative z-10 w-full max-w-3xl bg-white/10 backdrop-blur-xl rounded-2xl shadow-2xl p-6 md:p-10 border border-white/20">
-
         <h1 className="text-3xl md:text-4xl font-bold text-white text-center">
           Welcome to <span className="text-indigo-300">Snapify</span> 📸
         </h1>
@@ -94,13 +83,15 @@ const Albums = () => {
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
+
           {error && (
             <p className="text-red-300 text-sm mt-2 font-medium">{error}</p>
           )}
 
           <button
-          onClick={handleCreateAlbum}
-          className="mt-4 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition">
+            onClick={handleCreateAlbum}
+            className="mt-4 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition"
+          >
             Create
           </button>
         </div>
@@ -110,13 +101,14 @@ const Albums = () => {
           <h2 className="text-xl font-semibold text-white mb-4">Albums</h2>
 
           {album.length === 0 ? (
-            <p className="text-white/60 text-center">No albums found</p>
+            <p className="text-white/60 text-center">Loading...</p>
           ) : (
             <div className="grid sm:grid-cols-2 gap-4">
               {album.map((alb) => (
                 <div
-                  key={alb._id}
-                  className="bg-white/10 border border-white/20 rounded-2xl p-4 hover:bg-white/20 transition"
+                  key={alb.albumId}
+                  onClick={() => navigate(`/albums/id/${alb.albumId}`)}
+                  className="cursor-pointer bg-white/10 border border-white/20 rounded-2xl p-4 hover:bg-white/20 transition"
                 >
                   <h3 className="text-lg font-bold text-white">{alb.name}</h3>
                   <p className="text-white/70 text-sm mt-1">{alb.description}</p>
@@ -125,7 +117,6 @@ const Albums = () => {
             </div>
           )}
         </div>
-
       </div>
     </div>
   );

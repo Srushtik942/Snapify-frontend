@@ -31,7 +31,9 @@ export default function Navbar({ onSearch = () => {} }) {
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-white/20 backdrop-blur-xl border-b border-white/10">
       <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
-        <h1 className="text-indigo-300 font-bold text-4xl">Snapify</h1>
+        <h1
+        onClick={()=>navigate("/albums")}
+        className="text-indigo-300 font-bold text-4xl cursor-pointer">Snapify</h1>
 
         {/* <form className="flex gap-2"> */}
           <input
