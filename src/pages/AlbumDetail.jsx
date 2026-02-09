@@ -56,7 +56,6 @@ const AlbumDetail = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      // backend might return res.data.findImage or res.data.images
       const imagesData = res.data.findImage || res.data.images || [];
       setImages(imagesData);
 
@@ -141,7 +140,7 @@ const handleFavoriteImage = async (imageId) => {
       await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/albums/${albumId}/images`,
         formData,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" } }
       );
 
       toast.success("Image uploaded successfully!");
@@ -287,7 +286,7 @@ const handleFavoriteImage = async (imageId) => {
         className="relative bg-white/10 border border-white/20 rounded-2xl overflow-hidden"
       >
         <img
-          src={img.url || img}
+          src={img.path }
           alt="album"
           className="w-full h-40 object-cover"
         />
