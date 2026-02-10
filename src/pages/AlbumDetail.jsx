@@ -16,6 +16,7 @@ const AlbumDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isFavorite, setIsFavorite] = useState(false);
+  const [commentText, setCommentText] = useState({});
 
   // image upload
   const [file, setFile] = useState(null);
@@ -194,19 +195,47 @@ const handleFavoriteImage = async (imageId) => {
     }
   };
 
+  // -----------------Add Comment------------------
+
+  const handleAddComment = async(imageId)=>{
+    const text = commentText[imageId];
+
+    if(!text?.trim()){
+      toast.error("Enter a comment");
+      return;
+    }
+
+    try{
+      await axios.post(
+              `${import.meta.env.VITE_BACKEND_URL}/albums/${albumId}/images/${imageId}/comments`,
+              {comment: text},
+              {headers: {Authorization: `Bearer ${token}`}}
+      );
+      toast.success("Comment added!");
+
+      setCommentText(prev => ({...prev, [imageId]: ""}));
+
+      fetchAlbumImages();
+
+    }catch(err){
+      console.log(err);
+      toast.err("Failed to add comment")
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-500 via-purple-600 to-indigo-700">
+    <div className="min-h-screen bg-[#f6f8fc]">
       <Navbar />
-      <div className="max-w-5xl mx-auto px-4 py-10 my-5">
+      <div className="max-w-5xl mx-auto px-4 py-10 my-15">
         {loading ? (
-          <p className="text-white text-center text-lg">Loading album...</p>
+          <p className=" text-center text-lg">Loading album...</p>
         ) : error ? (
           <p className="text-red-200 text-center text-lg">{error}</p>
         ) : (
-          <div className="bg-white/10 backdrop-blur-xl rounded-2xl shadow-2xl p-6 md:p-10 border border-white/20">
+          <div className="bg-white/10  rounded-2xl shadow-sm p-6 md:p-10 border ">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <h1 className="text-3xl font-bold text-white">{album?.name}</h1>
+              <h1 className="text-3xl font-bold ">{album?.name}</h1>
               <div className="flex gap-3">
                 <button
                   onClick={handleFavorite}
@@ -214,12 +243,12 @@ const handleFavoriteImage = async (imageId) => {
                 >
                   <Star
                     size={28}
-                    className={isFavorite ? "text-yellow-400 fill-yellow-400" : "text-white"}
+                    className={isFavorite ? "text-yellow-400 fill-yellow-400" : "text-black"}
                   />
                 </button>
                 <button
                   onClick={handleDeleteAlbum}
-                  className="px-5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-semibold transition"
+                  className="px-5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-black font-semibold transition"
                 >
                   Delete
                 </button>
@@ -227,21 +256,26 @@ const handleFavoriteImage = async (imageId) => {
             </div>
 
             {/* Description */}
-            <div className="mt-8">
-              <textarea
-                value={desc}
-                onChange={(e) => setDesc(e.target.value)}
-                placeholder="Update album description..."
-                rows={3}
-                className="w-full p-4 rounded-xl bg-white/20 text-white placeholder-white/60 border border-white/20 outline-none focus:border-indigo-400"
-              />
-              <button
-                onClick={handleUpdateDescription}
-                className="mt-3 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition"
-              >
-                Save Description
-              </button>
-            </div>
+           <div className="mt-8 max-w-2xl">
+  <label className="block text-gray-700 font-medium mb-2">
+    Description
+  </label>
+
+  <textarea
+    value={desc}
+    onChange={(e) => setDesc(e.target.value)}
+    rows={3}
+    className="w-full p-3 rounded-lg border outline-none focus:ring-2 focus:ring-indigo-400"
+  />
+
+  <button
+    onClick={handleUpdateDescription}
+    className="mt-3 px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-black rounded-lg font-medium"
+  >
+    Save
+  </button>
+</div>
+
 
             {/* Upload Image */}
             <div className="mt-10">
@@ -249,26 +283,27 @@ const handleFavoriteImage = async (imageId) => {
                 type="file"
                 accept="image/*"
                 onChange={(e) => setFile(e.target.files[0])}
-                className="w-full text-white"
+                className="w-full text-black  "
+
               />
               <input
                 type="text"
                 placeholder="Tags (comma separated)"
                 value={tags}
                 onChange={(e) => setTags(e.target.value)}
-                className="w-full mt-3 px-4 py-3 rounded-xl outline-none bg-white/20 text-white placeholder-white/60 border border-white/20 focus:border-indigo-400"
+                className="w-full mt-3 px-4 py-3 rounded-xl outline-none text-black placeholder-black/60 border border-black/40 focus:border-indigo-400"
               />
               <input
                 type="text"
                 placeholder="Person name"
                 value={person}
                 onChange={(e) => setPerson(e.target.value)}
-                className="w-full mt-3 px-4 py-3 rounded-xl outline-none bg-white/20 text-white placeholder-white/60 border border-white/20 focus:border-indigo-400"
+                className="w-full mt-3 px-4 py-3 rounded-xl outline-none bg-white/20 text-black placeholder-black/60 border border-black/20 focus:border-indigo-400"
               />
               <button
                 onClick={handleUploadImage}
                 disabled={uploading}
-                className="mt-3 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl transition disabled:opacity-50"
+                className="mt-3 w-full bg-green-600 hover:bg-green-700 text-black font-semibold py-3 rounded-xl transition disabled:opacity-50"
               >
                 {uploading ? "Uploading..." : "Upload Image"}
               </button>
@@ -278,28 +313,84 @@ const handleFavoriteImage = async (imageId) => {
             {/* Images */}
 <div className="mt-10 grid grid-cols-2 md:grid-cols-3 gap-4">
   {images.length === 0 ? (
-    <p className="text-white/60">No images uploaded yet.</p>
+    <p className="text-red">No images uploaded yet.</p>
   ) : (
     images.map((img) => (
-      <div
-        key={img._id}
-        className="relative bg-white/10 border border-white/20 rounded-2xl overflow-hidden"
-      >
+     <div
+  key={img._id}
+  className="relative bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden"
+>
+
         <img
           src={img.path }
           alt="album"
-          className="w-full h-40 object-cover"
+          className="w-full h-48 object-cover"
         />
+<div className="p-3 space-y-2">
+
+  {/* Person */}
+  {img.person && (
+    <p className="text-sm text-gray-700">
+      👤 <span className="font-medium">Person:</span> {img.person}
+    </p>
+  )}
+
+  {/* Tags */}
+  {img.tags?.length > 0 && (
+    <div className="flex flex-wrap gap-1">
+      {img.tags.map((tag, i) => (
+        <span
+          key={i}
+          className="px-2 py-0.5 text-xs bg-indigo-100 text-indigo-700 rounded-full"
+        >
+          #{tag}
+        </span>
+      ))}
+    </div>
+  )}
+
+  {/* Existing comments */}
+  <div className="text-sm text-black mb-2">
+    {img.comments?.map(c => (
+      <p key={c.commentId}>• {c.text}</p>
+    ))}
+  </div>
+
+  {/* Add comment */}
+  <div className="flex gap-2">
+    <input
+      type="text"
+      placeholder="Add comment..."
+      value={commentText[img.imageId] || ""}
+      onChange={(e) =>
+        setCommentText(prev => ({
+          ...prev,
+          [img.imageId]: e.target.value
+        }))
+      }
+      className="flex-1 px-2 py-1 rounded bg-white/20 text-black text-md outline-none"
+    />
+
+    <button
+      onClick={() => handleAddComment(img.imageId)}
+      className="px-3 py-1 bg-indigo-500 text-black rounded text-sm"
+    >
+      Post
+    </button>
+  </div>
+</div>
+
+
         {/* Favorite Button */}
         <button
   onClick={() => handleFavoriteImage(img.imageId)}
-  className="absolute top-2 right-2 p-1 bg-white/30 rounded-full hover:bg-white/50 transition"
+  className="absolute top-2 right-2 p-1 bg-black rounded-full hover:bg-white/50 transition"
 >
 
           <Star
             size={20}
             className={
-              img.isFavorite ? "text-yellow-400 fill-yellow-400" : "text-white"
+              img.isFavorite ? "text-yellow-400 fill-yellow-400" : "text-black"
             }
           />
         </button>
