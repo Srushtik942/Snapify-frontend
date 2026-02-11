@@ -17,6 +17,8 @@ const AlbumDetail = () => {
   const [error, setError] = useState("");
   const [isFavorite, setIsFavorite] = useState(false);
   const [commentText, setCommentText] = useState({});
+  const [shareEmail, setShareEmail] = useState("");
+  const [sharedUser, setSharedUser] = useState([]);
 
   // image upload
   const [file, setFile] = useState(null);
@@ -223,6 +225,56 @@ const handleFavoriteImage = async (imageId) => {
     }
   }
 
+
+  // -----------------------Delete Image-------------------
+
+
+  const handleDeleteImage = async(imageId)=>{
+      try{
+        await axios.delete(
+          `${import.meta.env.VITE_BACKEND_URL}/albums/${albumId}/images/${imageId}`,
+          {
+            headers:{ Authorization: `Bearer ${token}`},
+          }
+        );
+        toast.success("Image deleted!");
+
+        setImages((prev)=> prev.filter((img)=> img.imageId !== imageId));
+      }catch(error){
+        console.log(error);
+        toast.error("Failed to delete image ")
+      }
+  }
+
+
+  // ------------------share album-------------------
+
+  const handleShareAlbum = async()=>{
+    if(!shareEmail.trim()){
+      toast.error("Enter email to share");
+      return;
+    }
+    try{
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/albums/${albumId}/share`,
+        {emails: [shareEmail]},
+        {headers:{Authorization: `Bearer ${token}`}}
+
+      );
+
+      toast.success(res.data.message);
+
+        setSharedUser(res.data.sharedWith || []);
+
+    setShareEmail("");
+
+
+    }catch(error){
+      console.log(error);
+      toast.error("Share Failed!")
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#f6f8fc]">
       <Navbar />
@@ -275,6 +327,45 @@ const handleFavoriteImage = async (imageId) => {
     Save
   </button>
 </div>
+
+{/* ---------------- Share Album UI ---------------- */}
+<div className="mt-8 max-w-2xl">
+  <label className="block text-gray-700 font-medium mb-2">
+    Share Album
+  </label>
+
+  <div className="flex gap-2">
+    <input
+      type="email"
+      placeholder="Enter email"
+      value={shareEmail}
+      onChange={(e) => setShareEmail(e.target.value)}
+      className="flex-1 px-3 py-2 border rounded-lg outline-none"
+    />
+
+    <button
+      onClick={handleShareAlbum}
+      className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+    >
+      Share
+    </button>
+  </div>
+
+  {/* Show shared users */}
+  {sharedUser.length > 0 && (
+    <div className="mt-3">
+      <p className="font-medium text-sm">Shared With:</p>
+
+      {sharedUser.map((email, i) => (
+        <p key={i} className="text-sm text-gray-700">
+          • {email}
+        </p>
+      ))}
+    </div>
+  )}
+</div>
+
+
 
 
             {/* Upload Image */}
@@ -379,6 +470,15 @@ const handleFavoriteImage = async (imageId) => {
     </button>
   </div>
 </div>
+
+{/* delete button */}
+
+<button
+onClick={()=> handleDeleteImage(img.imageId)}
+  className="absolute top-2 left-2 px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700"
+>
+  Delete
+</button>
 
 
         {/* Favorite Button */}
