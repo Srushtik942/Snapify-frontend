@@ -19,6 +19,10 @@ const AlbumDetail = () => {
   const [commentText, setCommentText] = useState({});
   const [shareEmail, setShareEmail] = useState("");
   const [sharedUser, setSharedUser] = useState([]);
+  const [filteredImages, setFilteredImages] = useState([]);
+  const [showFavOnly, setShowFavOnly] = useState(false);
+  const [selectedTag, setSelectedTag] = useState("");
+
 
   // image upload
   const [file, setFile] = useState(null);
@@ -61,6 +65,7 @@ const AlbumDetail = () => {
 
       const imagesData = res.data.findImage || res.data.images || [];
       setImages(imagesData);
+      setFilteredImages(imagesData);
 
     } catch (err) {
       console.log(err);
@@ -116,6 +121,15 @@ const handleFavoriteImage = async (imageId) => {
           : i
       )
     );
+
+    setFilteredImages(prev =>
+  prev.map(i =>
+    i.imageId === imageId
+      ? { ...i, isFavorite: res.data.image.isFavorite }
+      : i
+  )
+);
+
 
     toast.success("Image favorite updated!");
 
@@ -275,6 +289,24 @@ const handleFavoriteImage = async (imageId) => {
     }
   }
 
+  // fetching favorite image
+
+  useEffect(()=>{
+    let result = [...images];
+
+    if(showFavOnly){
+      result = result.filter((img)=> img.isFavorite);
+    }
+
+    // filter by tag
+
+    if(selectedTag){
+      result = result.filter((img)=> img.tags?.includes(selectedTag));
+    }
+
+    setFilteredImages(result);
+  }, [images, showFavOnly, selectedTag]);
+
   return (
     <div className="min-h-screen bg-[#f6f8fc]">
       <Navbar />
@@ -365,9 +397,6 @@ const handleFavoriteImage = async (imageId) => {
   )}
 </div>
 
-
-
-
             {/* Upload Image */}
             <div className="mt-10">
               <input
@@ -401,12 +430,49 @@ const handleFavoriteImage = async (imageId) => {
             </div>
 
 
+            {/* filters */}
+
+            <div className="flex gap-3 mt-8 flex-wrap">
+              {/* filter favorite image */}
+              <button
+                onClick={() => setShowFavOnly(prev => !prev)}
+                className={`px-4 py-2 rounded-lg border
+                 ${showFavOnly ? "bg-yellow-400" : "bg-white"}`}
+              >
+                ⭐ Favorites
+              </button>
+
+
+              {/*  Tag filter*/}
+
+              <input
+    type="text"
+    placeholder="Filter by tag..."
+    value={selectedTag}
+    onChange={(e) => setSelectedTag(e.target.value)}
+    className="px-3 py-2 border rounded-lg"
+  />
+
+  {/* reset */}
+
+   <button
+    onClick={() => {
+      setShowFavOnly(false);
+      setSelectedTag("");
+    }}
+    className="px-4 py-2 bg-gray-300 rounded-lg"
+  >
+    Reset
+  </button>
+</div>
+
+
             {/* Images */}
 <div className="mt-10 grid grid-cols-2 md:grid-cols-3 gap-4">
   {images.length === 0 ? (
     <p className="text-red">No images uploaded yet.</p>
   ) : (
-    images.map((img) => (
+    filteredImages.map((img) => (
      <div
   key={img._id}
   className="relative bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden"
